@@ -1,10 +1,9 @@
-mport React from 'react'
+import React from 'react';
 
 export default function App() {
   return (
     <div>
-      <h1>To-do Liste Luxe</h1>
-      <p>Bienvenue dans votre application premium de tâches partagées.</p>
+      <h1>Bienvenue dans ton appli Vistal Liste !</h1>
     </div>
-  )
+  );
 }
