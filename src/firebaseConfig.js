@@ -15,3 +15,22 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Fonction pour ajouter une tâche
+export async function ajouterTache(titre) {
+  try {
+    await addDoc(collection(db, "taches"), {
+      titre: titre,
+      date: new Date()
+    });
+  } catch (e) {
+    console.error("Erreur ajout tâche :", e);
+  }
+}
+
+// Fonction pour récupérer toutes les tâches
+export async function recupererTaches() {
+  const snapshot = await getDocs(collection(db, "taches"));
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
