@@ -1,56 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { ajouterTache, recupererTaches } from './firebaseConfig';
+import { useState, useEffect } from "react";
+import { ajouterTache, recupererTaches } from "./firebaseConfig";
 
-export default function App() {
+function App() {
+  const [nouvelleTache, setNouvelleTache] = useState("");
   const [taches, setTaches] = useState([]);
-  const [nouvelleTache, setNouvelleTache] = useState('');
 
   useEffect(() => {
     chargerTaches();
   }, []);
 
   const chargerTaches = async () => {
-    const toutesLesTaches = await recupererTaches();
-    setTaches(toutesLesTaches);
+    const tachesFirebase = await recupererTaches();
+    setTaches(tachesFirebase);
   };
 
-  const handleAjout = async () => {
-    if (nouvelleTache.trim() === '') return;
-    await ajouterTache(nouvelleTache);
-    setNouvelleTache('');
-    chargerTaches(); // Recharge les tâches après ajout
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (nouvelleTache.trim() !== "") {
+      await ajouterTache(nouvelleTache);
+      setNouvelleTache("");
+      chargerTaches();
+    }
   };
-import { useState } from "react";
-import { ajouterTache } from "./firebaseConfig";
 
-const [nouvelleTache, setNouvelleTache] = useState("");
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (nouvelleTache.trim() === "") return;
-
-  await ajouterTache(nouvelleTache);
-  setNouvelleTache(""); // vide le champ
-};
   return (
-    <form onSubmit={handleSubmit}>
-  <input
-    type="text"
-    value={nouvelleTache}
-    onChange={(e) => setNouvelleTache(e.target.value)}
-    placeholder="Ajouter une tâche"
-  />
-  <button type="submit">Ajouter</button>
-</form>
-    <div style={{ padding: '20px' }}>
-      <h1>Ma To-Do Liste Luxe</h1>
-      <input
-        type="text"
-        value={nouvelleTache}
-        onChange={(e) => setNouvelleTache(e.target.value)}
-        placeholder="Nouvelle tâche"
-      />
-      <button onClick={handleAjout}>Ajouter</button>
+    <div style={{ padding: "20px", fontFamily: "Arial" }}>
+      <h1>Ma To-do List</h1>
+      <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
+        <input
+          type="text"
+          placeholder="Nouvelle tâche"
+          value={nouvelleTache}
+          onChange={(e) => setNouvelleTache(e.target.value)}
+        />
+        <button type="submit" style={{ marginLeft: "10px" }}>Ajouter</button>
+      </form>
+
       <ul>
         {taches.map((tache) => (
           <li key={tache.id}>{tache.titre}</li>
@@ -59,3 +44,5 @@ const handleSubmit = async (e) => {
     </div>
   );
 }
+
+export default App;
