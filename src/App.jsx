@@ -20,8 +20,28 @@ export default function App() {
     setNouvelleTache('');
     chargerTaches(); // Recharge les tâches après ajout
   };
+import { useState } from "react";
+import { ajouterTache } from "./firebaseConfig";
 
+const [nouvelleTache, setNouvelleTache] = useState("");
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (nouvelleTache.trim() === "") return;
+
+  await ajouterTache(nouvelleTache);
+  setNouvelleTache(""); // vide le champ
+};
   return (
+    <form onSubmit={handleSubmit}>
+  <input
+    type="text"
+    value={nouvelleTache}
+    onChange={(e) => setNouvelleTache(e.target.value)}
+    placeholder="Ajouter une tâche"
+  />
+  <button type="submit">Ajouter</button>
+</form>
     <div style={{ padding: '20px' }}>
       <h1>Ma To-Do Liste Luxe</h1>
       <input
