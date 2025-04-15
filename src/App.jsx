@@ -1,43 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ajouterTache, recupererTaches } from './firebaseConfig';
 
-function App() {
-  const [tache, setTache] = useState('');
-  const [listeTaches, setListeTaches] = useState([]);
+export default function App() {
+  const [taches, setTaches] = useState([]);
+  const [nouvelleTache, setNouvelleTache] = useState('');
 
   useEffect(() => {
-    recupererTaches().then(taches => {
-      setListeTaches(taches);
-    });
+    chargerTaches();
   }, []);
 
+  const chargerTaches = async () => {
+    const toutesLesTaches = await recupererTaches();
+    setTaches(toutesLesTaches);
+  };
+
   const handleAjout = async () => {
-    if (tache.trim() !== '') {
-      await ajouterTache(tache);
-      const taches = await recupererTaches();
-      setListeTaches(taches);
-      setTache('');
-    }
+    if (nouvelleTache.trim() === '') return;
+    await ajouterTache(nouvelleTache);
+    setNouvelleTache('');
+    chargerTaches(); // Recharge les tâches après ajout
   };
 
   return (
-    <div>
-      <h1>Ma To-Do Liste</h1>
+    <div style={{ padding: '20px' }}>
+      <h1>Ma To-Do Liste Luxe</h1>
       <input
         type="text"
-        value={tache}
-        onChange={(e) => setTache(e.target.value)}
+        value={nouvelleTache}
+        onChange={(e) => setNouvelleTache(e.target.value)}
         placeholder="Nouvelle tâche"
       />
       <button onClick={handleAjout}>Ajouter</button>
-
       <ul>
-        {listeTaches.map((t) => (
-          <li key={t.id}>{t.titre}</li>
+        {taches.map((tache) => (
+          <li key={tache.id}>{tache.titre}</li>
         ))}
       </ul>
     </div>
   );
 }
-
-export default App;
